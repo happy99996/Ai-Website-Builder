@@ -94,9 +94,12 @@ function CodeView() {
         const mergedFiles = { ...defaultFiles, ...processedAiFiles };
         setFiles(mergedFiles);
 
+        // Ensure files is always an object, even if result.data?.files is undefined
+        const filesToUpdate = result.data?.files || {};
+        
         await UpdateFiles({
             workspaceId: id,
-            files: result.data?.files
+            files: filesToUpdate
         });
         setLoading(false);
     }

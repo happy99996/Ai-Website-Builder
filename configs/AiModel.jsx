@@ -5,6 +5,11 @@ const {
 } = require("@google/generative-ai");
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+
+if (!apiKey) {
+    console.error('NEXT_PUBLIC_GEMINI_API_KEY is not set. Please add your Gemini API key to .env.local');
+}
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
@@ -32,13 +37,12 @@ const EnhancePromptConfig = {
     topP: 0.8,
     topK: 40,
     maxOutputTokens: 1000,
-    responseMimeType: "application/json",
+    responseMimeType: "text/plain",
 };
 
 export const chatSession = model.startChat({
     generationConfig,
-    history: [
-    ],
+    history: [],
 });
 
 export const GenAiCode = model.startChat({
@@ -57,12 +61,9 @@ export const GenAiCode = model.startChat({
             ],
           },
     ],
-})
+});
 
 export const enhancePromptSession = model.startChat({
     generationConfig: EnhancePromptConfig,
     history: [],
 });
-
-// const result = await chatSession.sendMessage("INSERT_INPUT_HERE");
-// console.log(result.response.text());

@@ -165,41 +165,47 @@ Ensure the project follows best practices in component organization and styling.
         `,
 
         wordpress: dedent`
-        Generate a fully structured WordPress theme with modern PHP and WordPress best practices.
+        Generate a fully structured WordPress theme that can be previewed as static HTML.
 
-        **Project Requirements:**  
-        - Create a complete WordPress theme structure
-        - Use WordPress hooks, filters, and functions properly
-        - Include proper theme files (style.css, index.php, functions.php, etc.)
-        - Use WordPress coding standards
-        - Implement responsive design with CSS
-        - Include proper WordPress template hierarchy
-        - Add theme customization options
-        - Use WordPress security best practices
+        **CRITICAL REQUIREMENTS FOR PREVIEW:**
+        - The /index.php file MUST be a complete, self-contained HTML document
+        - Include full HTML structure: <!DOCTYPE html>, <html>, <head>, <body>
+        - DO NOT use PHP includes like get_header() or get_footer() in index.php
+        - Embed all header and footer content directly in index.php
+        - Link to style.css in the <head> section: <link rel="stylesheet" href="style.css">
+        - Use static placeholder content instead of WordPress functions like the_title(), the_content()
+        - Make index.php viewable as a complete webpage without PHP processing
+
+        **WordPress Theme Requirements:**
+        - Create a complete WordPress theme structure with proper files
+        - Use WordPress coding standards and best practices
+        - Include proper theme header in style.css
+        - Create responsive design with modern CSS
+        - Include semantic HTML structure
+        - Add placeholder content that demonstrates the theme layout
 
         **Required Files:**
-        - style.css (with proper theme header)
-        - index.php (main template)
-        - header.php and footer.php
-        - functions.php (theme setup and enqueue scripts)
-        - Additional template files as needed
+        - /index.php (MUST be complete HTML document for preview)
+        - /style.css (with proper WordPress theme header and all styles)
+        - /header.php (traditional WordPress header - for reference)
+        - /footer.php (traditional WordPress footer - for reference)
+        - /functions.php (theme setup and WordPress functions)
 
-        **WordPress Features to Include:**
-        - Custom post types and fields (if applicable)
-        - Widget areas
-        - Navigation menus
-        - Theme customizer options
-        - Proper WordPress loop implementation
+        **Preview Compatibility:**
+        - Ensure index.php can be opened directly in browser and display properly
+        - Include sample blog posts, navigation, and content as static HTML
+        - Use placeholder images from external URLs (Pexels, Pixabay)
+        - Make the theme visually appealing with modern design
 
         Return the response in JSON format with the following schema:
         {
           "projectTitle": "",
           "explanation": "",
           "files": {
-            "/style.css": {
+            "/index.php": {
               "code": ""
             },
-            "/index.php": {
+            "/style.css": {
               "code": ""
             },
             ...
@@ -207,7 +213,7 @@ Ensure the project follows best practices in component organization and styling.
           "generatedFiles": []
         }
 
-        Additionally, include an explanation of the theme's structure, purpose, and WordPress-specific features implemented.
+        Additionally, include an explanation of the theme's structure, purpose, and how it maintains WordPress compatibility while being previewable as static HTML.
         `,
 
         html: dedent`
@@ -290,13 +296,13 @@ Ensure the project follows best practices in component organization and styling.
 
         wordpress: dedent`
         You are a WordPress development expert and prompt enhancement specialist. Your task is to improve the given user prompt by:
-        1. Making it more specific for WordPress theme/plugin development
-        2. Including WordPress-specific requirements (hooks, filters, template hierarchy)
-        3. Adding WordPress best practices and coding standards
-        4. Specifying theme structure and WordPress functionality
-        5. Including WordPress features (custom post types, widgets, customizer)
-        6. Mentioning WordPress security and performance considerations
-        7. Focus on WordPress theme development primarily
+        1. Making it more specific for WordPress theme development that can be previewed as static HTML
+        2. Including WordPress-specific requirements (theme structure, proper file organization)
+        3. Adding WordPress best practices while ensuring preview compatibility
+        4. Specifying theme structure that works both as WordPress theme and static preview
+        5. Including WordPress features (custom post types, widgets, customizer) as static demonstrations
+        6. Mentioning the need for self-contained HTML in index.php for preview purposes
+        7. Focus on WordPress theme development that's visually previewable
         8. Keep it less than 300 words
 
         Return only the enhanced prompt as plain text without any JSON formatting or additional explanations.

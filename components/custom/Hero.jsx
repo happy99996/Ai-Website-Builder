@@ -1,14 +1,17 @@
 "use client"
 import Lookup from '@/data/Lookup';
+import Environments from '@/data/Environments';
 import { MessagesContext } from '@/context/MessagesContext';
 import { ArrowRight, Link, Sparkles, Send, Wand2, Loader2 } from 'lucide-react';
 import React, { useContext, useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useRouter } from 'next/navigation';
+import EnvironmentSelector from './EnvironmentSelector';
 
 function Hero() {
     const [userInput, setUserInput] = useState('');
+    const [selectedEnvironment, setSelectedEnvironment] = useState('react');
     const [isEnhancing, setIsEnhancing] = useState(false);
     const { messages, setMessages } = useContext(MessagesContext);
     const CreateWorkspace = useMutation(api.workspace.CreateWorkspace);
@@ -17,11 +20,13 @@ function Hero() {
     const onGenerate = async (input) => {
         const msg = {
             role: 'user',
-            content: input
+            content: input,
+            environment: selectedEnvironment
         }
         setMessages(msg);
         const workspaceID = await CreateWorkspace({
-            messages: [msg]
+            messages: [msg],
+            environment: selectedEnvironment
         });
         router.push('/workspace/' + workspaceID);
     }
@@ -36,7 +41,10 @@ function Hero() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ prompt: userInput }),
+                body: JSON.stringify({ 
+                    prompt: userInput,
+                    environment: selectedEnvironment 
+                }),
             });
 
             const data = await response.json();
@@ -54,6 +62,32 @@ function Hero() {
         setUserInput(suggestion);
     };
 
+    const getEnvironmentSuggestions = () => {
+        const env = Environments.ENVIRONMENTS.find(e => e.id === selectedEnvironment);
+        switch (selectedEnvironment) {
+            case 'wordpress':
+                return [
+                    'Create a modern WordPress blog theme with custom post types',
+                    'Build a WordPress e-commerce theme with WooCommerce integration',
+                    'Design a WordPress portfolio theme for photographers',
+                    'Create a WordPress news theme with multiple layouts',
+                    'Build a WordPress restaurant theme with menu management',
+                    'Design a WordPress corporate theme with team sections'
+                ];
+            case 'html':
+                return [
+                    'Create a responsive landing page for a startup',
+                    'Build a portfolio website for a web developer',
+                    'Design a restaurant website with menu and contact form',
+                    'Create a corporate website with multiple pages',
+                    'Build a photography portfolio with image gallery',
+                    'Design a fitness website with class schedules'
+                ];
+            default: // react
+                return Lookup?.SUGGSTIONS || [];
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-950 relative overflow-hidden">
             {/* Animated background elements */}
@@ -68,16 +102,22 @@ function Hero() {
                         <div className="inline-flex items-center justify-center space-x-2 bg-electric-blue-500/20 rounded-full px-6 py-3 mb-6 border border-electric-blue-500/30">
                             <Sparkles className="h-6 w-6 text-electric-blue-400" />
                             <span className="text-electric-blue-400 text-lg font-semibold tracking-wide">
-                                NEXT-GEN AI DEVELOPMENT
+                                MULTI-PLATFORM AI DEVELOPMENT
                             </span>
                         </div>
                         <h1 className="text-6xl md:text-7xl font-bold text-transparent bg-clip-text bg-[linear-gradient(45deg,#60a5fa_30%,#ec4899)] leading-tight">
                             Code the <br className="md:hidden" />Impossible
                         </h1>
                         <p className="text-xl text-neon-cyan max-w-3xl mx-auto font-mono tracking-tight">
-                            Transform your wildest ideas into production-ready code with Ai-powered assistance
+                            Transform your ideas into production-ready code across React, WordPress, and HTML platforms
                         </p>
                     </div>
+
+                    {/* Environment Selector */}
+                    <EnvironmentSelector 
+                        selectedEnvironment={selectedEnvironment}
+                        onEnvironmentChange={setSelectedEnvironment}
+                    />
 
                     {/* Modified Input Section */}
                     <div className="w-full max-w-3xl bg-gray-900/40 backdrop-blur-2xl rounded-xl border-2 border-electric-blue-500/40 shadow-[0_0_40px_5px_rgba(59,130,246,0.15)]">
@@ -85,7 +125,7 @@ function Hero() {
                             <div className="bg-gray-900/80 p-6 rounded-lg">
                                 <div className="flex gap-4">
                                     <textarea
-                                        placeholder="DESCRIBE YOUR VISION..."
+                                        placeholder={`DESCRIBE YOUR ${selectedEnvironment.toUpperCase()} PROJECT...`}
                                         value={userInput}
                                         onChange={(e) => setUserInput(e.target.value)}
                                         className="w-full bg-transparent border-2 border-electric-blue-500/30 rounded-lg p-5 text-gray-100 placeholder-electric-blue-500/60 focus:border-electric-blue-500 focus:ring-0 outline-none font-mono text-lg h-40 resize-none transition-all duration-300 hover:border-electric-blue-500/60"
@@ -98,6 +138,7 @@ function Hero() {
                                                     onClick={enhancePrompt}
                                                     disabled={isEnhancing}
                                                     className={`flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 rounded-xl px-4 py-4 transition-all duration-200 ${isEnhancing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                                    title="Enhance Prompt"
                                                 >
                                                     {isEnhancing ? (
                                                         <Loader2 className="h-8 w-8 animate-spin" />
@@ -109,6 +150,7 @@ function Hero() {
                                                     onClick={() => onGenerate(userInput)}
                                                     disabled={isEnhancing}
                                                     className={`flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-xl px-4 py-4 transition-all duration-200 ${isEnhancing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                                    title="Generate Code"
                                                 >
                                                     <Send className="h-8 w-8" />
                                                 </button>
@@ -116,24 +158,34 @@ function Hero() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="flex justify-end mt-4">
+                                <div className="flex justify-between items-center mt-4">
+                                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                                        <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                                        {selectedEnvironment.charAt(0).toUpperCase() + selectedEnvironment.slice(1)} Environment Selected
+                                    </div>
                                     <Link className="h-6 w-6 text-electric-blue-400/80 hover:text-electric-blue-400 transition-colors duration-200" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Holographic Suggestions Grid */}
+                    {/* Dynamic Suggestions Grid */}
                     <div className="w-full max-w-5xl">
+                        <div className="text-center mb-6">
+                            <h3 className="text-xl font-semibold text-gray-300 mb-2">
+                                {selectedEnvironment.charAt(0).toUpperCase() + selectedEnvironment.slice(1)} Project Ideas
+                            </h3>
+                            <p className="text-gray-500">Click on any suggestion to get started</p>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {Lookup?.SUGGSTIONS.map((suggestion, index) => (
+                            {getEnvironmentSuggestions().map((suggestion, index) => (
                                 <button
                                     key={index}
                                     onClick={() => onSuggestionClick(suggestion)}
                                     className="group relative p-6 bg-gray-900/50 hover:bg-gray-800/60 border-2 border-electric-blue-500/20 rounded-xl text-left transition-all duration-300 hover:border-electric-blue-500/40 hover:shadow-[0_0_20px_2px_rgba(59,130,246,0.2)]"
                                 >
                                     <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_50%,#3b82f620)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
-                                    <span className="text-electric-blue-400/80 group-hover:text-electric-blue-400 font-mono text-sm tracking-wide transition-colors duration-300">
+                                    <span className="text-electric-blue-400/80 group-hover:text-electric-blue-400 font-mono text-sm tracking-wide transition-colors duration-300 relative z-10">
                                         {suggestion}
                                     </span>
                                 </button>

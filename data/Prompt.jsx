@@ -2,12 +2,40 @@ import dedent from 'dedent';
 
 export default {
     CHAT_PROMPT: dedent`
-    'You are an AI Assistant and experienced in React Development.
+    'You are an AI Assistant and experienced in Web Development.
     GUIDELINE:
     - Tell user what you are building
     - Response in few lines
     - Skip code examples and commentary
     `,
+
+    // Environment-specific chat prompts
+    CHAT_PROMPTS: {
+        react: dedent`
+        'You are an AI Assistant and experienced React Developer.
+        GUIDELINE:
+        - Tell user what React component/feature you are building
+        - Focus on React best practices and modern hooks
+        - Response in few lines
+        - Skip code examples and commentary
+        `,
+        wordpress: dedent`
+        'You are an AI Assistant and experienced WordPress Developer.
+        GUIDELINE:
+        - Tell user what WordPress theme/plugin feature you are building
+        - Focus on WordPress best practices and PHP/WordPress functions
+        - Response in few lines
+        - Skip code examples and commentary
+        `,
+        html: dedent`
+        'You are an AI Assistant and experienced Frontend Developer.
+        GUIDELINE:
+        - Tell user what HTML/CSS/JS feature you are building
+        - Focus on semantic HTML, modern CSS, and vanilla JavaScript
+        - Response in few lines
+        - Skip code examples and commentary
+        `
+    },
 
     CODE_GEN_PROMPT: dedent`
     Generate a fully structured React project using Vite.  
@@ -93,23 +121,199 @@ Ensure the project follows best practices in component organization and styling.
     - Update the package.json file with the required dependencies.
     - Do not use backend or database related.
     `,
+
+    // Environment-specific code generation prompts
+    CODE_GEN_PROMPTS: {
+        react: dedent`
+        Generate a fully structured React project using Vite.  
+        Ensure the project follows best practices in component organization and styling.  
+
+        **Project Requirements:**  
+        - Use **React** as the framework.  
+        - Add as many functional features as possible.  
+        - **Do not create an App.jsx file. Use App.js instead** and modify it accordingly.  
+        - Use **Tailwind CSS** for styling and create a modern, visually appealing UI.  
+        - Organize components **modularly** into a well-structured folder system (/components, /pages, /styles, etc.).  
+        - Include reusable components like **buttons, cards, and forms** where applicable.  
+        - Use **lucide-react** icons if needed for UI enhancement.  
+        - Do not create a src folder.
+        - Use React hooks (useState, useEffect, useContext) appropriately
+        - Implement proper component lifecycle management
+
+        **Image Handling Guidelines:**  
+        - Use royalty-free image sources (e.g., Pexels, Pixabay).
+        - Use images from the internet with proper URLs.
+
+        Return the response in JSON format with the following schema:
+        {
+          "projectTitle": "",
+          "explanation": "",
+          "files": {
+            "/App.js": {
+              "code": ""
+            },
+            ...
+          },
+          "generatedFiles": []
+        }
+
+        Additionally, include an explanation of the project's structure, purpose, and additional instructions:
+        - For placeholder images use appropriate URLs.
+        - Add external images if needed.
+        - The lucide-react library is available to be imported IF NECESSARY.
+        - Do not use backend or database related features.
+        `,
+
+        wordpress: dedent`
+        Generate a fully structured WordPress theme with modern PHP and WordPress best practices.
+
+        **Project Requirements:**  
+        - Create a complete WordPress theme structure
+        - Use WordPress hooks, filters, and functions properly
+        - Include proper theme files (style.css, index.php, functions.php, etc.)
+        - Use WordPress coding standards
+        - Implement responsive design with CSS
+        - Include proper WordPress template hierarchy
+        - Add theme customization options
+        - Use WordPress security best practices
+
+        **Required Files:**
+        - style.css (with proper theme header)
+        - index.php (main template)
+        - header.php and footer.php
+        - functions.php (theme setup and enqueue scripts)
+        - Additional template files as needed
+
+        **WordPress Features to Include:**
+        - Custom post types and fields (if applicable)
+        - Widget areas
+        - Navigation menus
+        - Theme customizer options
+        - Proper WordPress loop implementation
+
+        Return the response in JSON format with the following schema:
+        {
+          "projectTitle": "",
+          "explanation": "",
+          "files": {
+            "/style.css": {
+              "code": ""
+            },
+            "/index.php": {
+              "code": ""
+            },
+            ...
+          },
+          "generatedFiles": []
+        }
+
+        Additionally, include an explanation of the theme's structure, purpose, and WordPress-specific features implemented.
+        `,
+
+        html: dedent`
+        Generate a fully structured static website using HTML, CSS, and JavaScript.
+
+        **Project Requirements:**  
+        - Create semantic HTML5 structure
+        - Use modern CSS with Flexbox/Grid layouts
+        - Implement responsive design with media queries
+        - Add interactive JavaScript functionality
+        - Use CSS animations and transitions
+        - Optimize for performance and accessibility
+        - Include proper meta tags and SEO elements
+
+        **Required Files:**
+        - index.html (main page)
+        - styles.css (main stylesheet)
+        - script.js (JavaScript functionality)
+        - Additional HTML pages as needed
+
+        **Features to Include:**
+        - Responsive navigation
+        - Hero sections with call-to-action
+        - Interactive elements (forms, buttons, etc.)
+        - Smooth scrolling and animations
+        - Mobile-first responsive design
+        - Cross-browser compatibility
+
+        Return the response in JSON format with the following schema:
+        {
+          "projectTitle": "",
+          "explanation": "",
+          "files": {
+            "/index.html": {
+              "code": ""
+            },
+            "/styles.css": {
+              "code": ""
+            },
+            "/script.js": {
+              "code": ""
+            },
+            ...
+          },
+          "generatedFiles": []
+        }
+
+        Additionally, include an explanation of the website's structure, purpose, and modern web development features implemented.
+        `
+    },
     
     ENHANCE_PROMPT_RULES: dedent`
-    You are a prompt enhancement expert and website designer(React + vite). Your task is to improve the given user prompt by:
-    1. Making it more specific and detailed but..
+    You are a prompt enhancement expert and website designer. Your task is to improve the given user prompt by:
+    1. Making it more specific and detailed
     2. Including clear requirements and constraints
     3. Maintaining the original intent of the prompt
     4. Using clear and precise language
     5. Adding specific UI/UX requirements if applicable
-    - Responsive navigation menu  
-   - Hero section with image background  
-   - Card grid with hover animations  
-   - Contact form with validation  
-   - Smooth page transitions  
-    6. Dont use the backend or database related.
+    6. Don't use backend or database related features
     7. Keep it less than 300 words
-    
 
     Return only the enhanced prompt as plain text without any JSON formatting or additional explanations.
-    `
+    `,
+
+    // Environment-specific enhance prompt rules
+    ENHANCE_PROMPT_RULES: {
+        react: dedent`
+        You are a React development expert and prompt enhancement specialist. Your task is to improve the given user prompt by:
+        1. Making it more specific for React development
+        2. Including React-specific requirements (components, hooks, state management)
+        3. Adding modern React best practices
+        4. Specifying component architecture and structure
+        5. Including UI/UX requirements with React in mind
+        6. Mentioning specific React libraries if beneficial (React Router, etc.)
+        7. Keep it focused on frontend React development only
+        8. Keep it less than 300 words
+
+        Return only the enhanced prompt as plain text without any JSON formatting or additional explanations.
+        `,
+
+        wordpress: dedent`
+        You are a WordPress development expert and prompt enhancement specialist. Your task is to improve the given user prompt by:
+        1. Making it more specific for WordPress theme/plugin development
+        2. Including WordPress-specific requirements (hooks, filters, template hierarchy)
+        3. Adding WordPress best practices and coding standards
+        4. Specifying theme structure and WordPress functionality
+        5. Including WordPress features (custom post types, widgets, customizer)
+        6. Mentioning WordPress security and performance considerations
+        7. Focus on WordPress theme development primarily
+        8. Keep it less than 300 words
+
+        Return only the enhanced prompt as plain text without any JSON formatting or additional explanations.
+        `,
+
+        html: dedent`
+        You are a frontend web development expert and prompt enhancement specialist. Your task is to improve the given user prompt by:
+        1. Making it more specific for HTML/CSS/JavaScript development
+        2. Including modern web standards and semantic HTML requirements
+        3. Adding CSS best practices (Flexbox, Grid, responsive design)
+        4. Specifying JavaScript functionality and interactivity
+        5. Including accessibility and SEO considerations
+        6. Mentioning performance optimization techniques
+        7. Focus on static website development with modern web technologies
+        8. Keep it less than 300 words
+
+        Return only the enhanced prompt as plain text without any JSON formatting or additional explanations.
+        `
+    }
 }

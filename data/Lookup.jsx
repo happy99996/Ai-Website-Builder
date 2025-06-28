@@ -59,18 +59,6 @@ export default config;
 
         },
 
-    // Function to get default files based on environment
-    getDefaultFiles: (environment) => {
-        switch (environment) {
-            case 'wordpress':
-                return require('@/data/Environments').default.WORDPRESS_DEFAULT_FILES;
-            case 'html':
-                return require('@/data/Environments').default.HTML_DEFAULT_FILES;
-            default:
-                return Lookup.DEFAULT_FILE;
-        }
-    },
-
     DEPENDANCY: {
             "@google/generative-ai": "^0.21.0",
             "@heroicons/react": "^1.0.6",
